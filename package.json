@@ -174,7 +174,7 @@
     "build:webui": "npm run pre:webpack && cross-env BABEL_ENV=ui webpack --config tools/webpack.prod.config.babel.js",
     "build:docker": "docker build -t verdaccio . --no-cache",
     "build:docker:rpi": "docker build -f Dockerfile.rpi -t verdaccio:rpi .",
-    "install": "npm run prepublish"
+    "install": "npm i --dev && npm run prepublish"
   },
   "engines": {
     "node": ">=6.12.0",
