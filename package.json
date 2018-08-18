@@ -1,5 +1,5 @@
 {
-  "name": "verdaccio",
+  "name": "@lyft/verdaccio",
   "version": "3.6.0",
   "description": "Private npm repository server",
   "author": {
@@ -180,9 +180,6 @@
     "npm": ">=3"
   },
   "preferGlobal": true,
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "husky": {
     "hooks": {
       "pre-commit": "npm run lint"
