@@ -11,14 +11,11 @@ Dockerfile.rpi
 Dockerfile
 crowdin.yaml
 scripts/
-src/
-/.*
 .vscode/
 .circleci/
 debug/
 
 # build ui
-tools/
 
 ## assets and website
 assets/
