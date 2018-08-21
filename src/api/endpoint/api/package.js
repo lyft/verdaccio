@@ -52,51 +52,30 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
 
   route.get('/:package/-/:filename', can('access'), function(req: $RequestExtend, res: $ResponseExtend) {
     const tarballCachePath = '/verdaccio/.cacache/tarballs/';
-    if (!fs.existsSync(tarballCachePath)) mkdirp.sync(tarballCachePath); 
+    if (!fs.existsSync(tarballCachePath)) mkdirp.sync(tarballCachePath);
     
-    
-
-
     cacache.get.info(`${tarballCachePath}${req.params.package}`, req.params.filename).then((data) => {
-      if (data) {
-        console.log('TARBALL IN CACHE!');
-        cacache.get.stream(`${tarballCachePath}${req.params.package}`, req.params.filename).pipe(res);
-      } else {
-        console.log(`GETTING FILE ${req.params.package} @ ${req.params.filename}`);
-        const stream = storage.getTarball(req.params.package, req.params.filename);
+      let tarball;
 
-        const dup = stream.pipe(new PassThrough());
+      if (data) {
+        console.log('From cache...');
+        tarball = cacache.get.stream(`${tarballCachePath}${req.params.package}`, req.params.filename);
+      } else {
+        const stream = storage.getTarball(req.params.package, req.params.filename);
+        tarball = stream.pipe(new PassThrough());
         stream.pipe(new PassThrough()).pipe(
           cacache.put.stream(`${tarballCachePath}${req.params.package}`, req.params.filename)
         );
-
-        dup.on('content-length', function (content) {
-          res.header('Content-Length', content);
-        });
-        dup.on('error', function (err) {
-          return res.report_error(err);
-        });  
-        res.header('Content-Type', _constants.HEADERS.OCTET_STREAM);        
-        dup.pipe(res);
       }
+
+      tarball.on('content-length', function(content) {
+        res.header('Content-Length', content);
+      });
+      tarbal.on('error', function(err) {
+        return res.report_error(err);
+      });
+      res.header('Content-Type', HEADERS.OCTET_STREAM);        
+      tarball.pipe(res);      
     });
-
-
-
-
-
-
-
-
-    // const stream = storage.getTarball(req.params.package, req.params.filename);
-
-    // stream.on('content-length', function(content) {
-    //   res.header('Content-Length', content);
-    // });
-    // stream.on('error', function(err) {
-    //   return res.report_error(err);
-    // });
-    // res.header('Content-Type', HEADERS.OCTET_STREAM);
-    // stream.pipe(res);
   });
 }
