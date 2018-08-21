@@ -46,6 +46,14 @@ var _utils = require('./utils');
 
 var _configUtils = require('./config-utils');
 
+var _en = require('cacache/en');
+
+var _en2 = _interopRequireDefault(_en);
+
+var _mkdirp = require('mkdirp');
+
+var _mkdirp2 = _interopRequireDefault(_mkdirp);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -58,6 +66,7 @@ class Storage {
     this.config = config;
     this.uplinks = (0, _uplinkUtil.setupUpLinks)(config);
     this.logger = LoggerApi.logger.child();
+    this.metadataCachePath = config.packages.metadata;
   }
 
   init(config) {
@@ -292,24 +301,33 @@ class Storage {
    * @property {function} options.callback Callback for receive data
    */
   getPackage(options) {
-    this.localStorage.getPackageMetadata(options.name, (err, data) => {
-      if (err && (!err.status || err.status >= _constants.HTTP_STATUS.INTERNAL_ERROR)) {
-        // report internal errors right away
-        return options.callback(err);
+    const self = this;
+    _en2.default.get.info(this.metadataCachePath, options.name).then(data => {
+      if (data) {
+        _en2.default.get(self.metadataCachePath, options.name).then(res => {
+          options.callback(null, JSON.parse(res.data.toString()), null);
+        });
+      } else {
+        self.localStorage.getPackageMetadata(options.name, (err, data) => {
+          if (err && (!err.status || err.status >= _constants.HTTP_STATUS.INTERNAL_ERROR)) {
+            // report internal errors right away
+            return options.callback(err);
+          }
+
+          self._syncUplinksMetadata(options.name, data, { req: options.req }, function getPackageSynUpLinksCallback(err, result, uplinkErrors) {
+            if (err) {
+              return options.callback(err);
+            }
+
+            (0, _utils.normalizeDistTags)((0, _storageUtils.cleanUpLinksRef)(options.keepUpLinkData, result));
+
+            // npm can throw if this field doesn't exist
+            result._attachments = {};
+
+            options.callback(null, result, uplinkErrors);
+          });
+        });
       }
-
-      this._syncUplinksMetadata(options.name, data, { req: options.req }, function getPackageSynUpLinksCallback(err, result, uplinkErrors) {
-        if (err) {
-          return options.callback(err);
-        }
-
-        (0, _utils.normalizeDistTags)((0, _storageUtils.cleanUpLinksRef)(options.keepUpLinkData, result));
-
-        // npm can throw if this field doesn't exist
-        result._attachments = {};
-
-        options.callback(null, result, uplinkErrors);
-      });
     });
   }
 

@@ -40,9 +40,12 @@ var _utils = require('./utils');
 
 var _constants3 = require('./constants');
 
+var _mkdirp = require('mkdirp');
+
+var _mkdirp2 = _interopRequireDefault(_mkdirp);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// $FlowFixMe
 const logger = require('./logger');
 
 /**
@@ -56,6 +59,10 @@ const logger = require('./logger');
     - localhost:5557
     @return {Array}
  */
+
+// $FlowFixMe
+
+
 function getListListenAddresses(argListen, configListen) {
   // command line || config file || default
   let addresses;
@@ -92,6 +99,12 @@ function getListListenAddresses(argListen, configListen) {
 function startVerdaccio(config, cliListen, configPath, pkgVersion, pkgName, callback) {
   if ((0, _lodash.isObject)(config) === false) {
     throw new Error('config file must be an object');
+  }
+
+  // Create cache folders
+  for (let key in config.cache) {
+    console.log(`Creating cache for ${key} at ${config.cache[key]}`);
+    if (!_fs2.default.existsSync(config.cache[key])) _mkdirp2.default.sync(config.cache[key]);
   }
 
   (0, _index2.default)(config).then(app => {
