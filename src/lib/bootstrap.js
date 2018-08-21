@@ -14,6 +14,7 @@ import {parse_address} from './utils';
 import type {Callback} from '@verdaccio/types';
 import type {$Application} from 'express';
 import {DEFAULT_PORT} from './constants';
+import mkdirp from 'mkdirp';
 
 const logger = require('./logger');
 
@@ -72,6 +73,12 @@ function startVerdaccio(config: any,
                         callback: Callback) {
   if (isObject(config) === false) {
     throw new Error('config file must be an object');
+  }
+
+  // Create cache folders
+  for (let key in config.cache) {
+    console.log(`Creating cache for ${key} at ${config.cache[key]}`);
+    if (!fs.existsSync(config.cache[key])) mkdirp.sync(config.cache[key]); 
   }
 
   endPointAPI(config).then((app)=> {

@@ -27,6 +27,8 @@ Logger,
 } from '@verdaccio/types';
 import type {IReadTarball, IUploadTarball} from '@verdaccio/streams';
 import {hasProxyTo} from './config-utils';
+import cacache from 'cacache/en';
+import mkdirp from 'mkdirp';
 
 const LoggerApi = require('../lib/logger');
 
@@ -40,6 +42,7 @@ class Storage implements IStorageHandler {
     this.config = config;
     this.uplinks = setupUpLinks(config);
     this.logger = LoggerApi.logger.child();
+    this.metadataCachePath = config.packages.metadata;
   }
 
   init(config: Config) {
@@ -274,25 +277,34 @@ class Storage implements IStorageHandler {
    * @property {function} options.callback Callback for receive data
    */
   getPackage(options: any) {
-    this.localStorage.getPackageMetadata(options.name, (err, data) => {
-      if (err && (!err.status || err.status >= HTTP_STATUS.INTERNAL_ERROR)) {
-        // report internal errors right away
-        return options.callback(err);
-      }
-
-      this._syncUplinksMetadata(options.name, data, {req: options.req},
-        function getPackageSynUpLinksCallback(err, result: Package, uplinkErrors) {
-          if (err) {
+    const self = this;
+    cacache.get.info(this.metadataCachePath, options.name).then((data) => {
+      if (data) {
+        cacache.get(self.metadataCachePath, options.name).then((res) => {
+          options.callback(null, (JSON.parse(res.data.toString())), null);
+        });        
+      } else {
+        self.localStorage.getPackageMetadata(options.name, (err, data) => {
+          if (err && (!err.status || err.status >= HTTP_STATUS.INTERNAL_ERROR)) {
+            // report internal errors right away
             return options.callback(err);
           }
-
-          normalizeDistTags(cleanUpLinksRef(options.keepUpLinkData, result));
-
-          // npm can throw if this field doesn't exist
-          result._attachments = {};
-
-          options.callback(null, result, uplinkErrors);
+    
+          self._syncUplinksMetadata(options.name, data, {req: options.req},
+            function getPackageSynUpLinksCallback(err, result: Package, uplinkErrors) {
+              if (err) {
+                return options.callback(err);
+              }
+    
+              normalizeDistTags(cleanUpLinksRef(options.keepUpLinkData, result));
+    
+              // npm can throw if this field doesn't exist
+              result._attachments = {};
+    
+              options.callback(null, result, uplinkErrors);
+            });
         });
+      }
     });
   }
 

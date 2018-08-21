@@ -51,12 +51,10 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
   });
 
   route.get('/:package/-/:filename', can('access'), function(req: $RequestExtend, res: $ResponseExtend) {
-    const tarballCachePath = '/verdaccio/.cacache/tarballs/';
-    if (!fs.existsSync(tarballCachePath)) mkdirp.sync(tarballCachePath);
-    
+    const tarballCachePath = config.cache.tarball;
+
     cacache.get.info(`${tarballCachePath}${req.params.package}`, req.params.filename).then((data) => {
       let tarball;
-
       if (data) {
         console.log('From cache...');
         tarball = cacache.get.stream(`${tarballCachePath}${req.params.package}`, req.params.filename);
