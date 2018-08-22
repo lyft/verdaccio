@@ -71,7 +71,7 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
       tarball.on('content-length', function(content) {
         res.header('Content-Length', content);
       });
-      tarbal.on('error', function(err) {
+      tarball.on('error', function(err) {
         return res.report_error(err);
       });
       res.header('Content-Type', HEADERS.OCTET_STREAM);        
