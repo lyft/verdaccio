@@ -27,8 +27,9 @@ Logger,
 } from '@verdaccio/types';
 import type {IReadTarball, IUploadTarball} from '@verdaccio/streams';
 import {hasProxyTo} from './config-utils';
-import cacache from 'cacache/en';
-import mkdirp from 'mkdirp';
+
+const cacache = require('cacache/en');
+const mkdirp = require('mkdirp');
 
 const LoggerApi = require('../lib/logger');
 
@@ -37,12 +38,13 @@ class Storage implements IStorageHandler {
   config: Config;
   logger: Logger;
   uplinks: ProxyList;
+  metadataCachePath: String;
 
   constructor(config: Config) {
     this.config = config;
     this.uplinks = setupUpLinks(config);
     this.logger = LoggerApi.logger.child();
-    this.metadataCachePath = config.packages.metadata;
+    this.metadataCachePath = config.cache.metadata;
   }
 
   init(config: Config) {
@@ -278,7 +280,7 @@ class Storage implements IStorageHandler {
    */
   getPackage(options: any) {
     const self = this;
-    cacache.get.info(this.metadataCachePath, options.name).then((data) => {
+    cacache.get.info(self.metadataCachePath, options.name).then((data) => {
       if (data) {
         cacache.get(self.metadataCachePath, options.name).then((res) => {
           options.callback(null, (JSON.parse(res.data.toString())), null);

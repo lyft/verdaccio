@@ -7,9 +7,10 @@ import {HEADERS} from '../../../lib/constants';
 import type {Router} from 'express';
 import type {Config} from '@verdaccio/types';
 import type {IAuth, $ResponseExtend, $RequestExtend, $NextFunctionVer, IStorageHandler} from '../../../../types';
-import cacache from 'cacache/en';
-import mkdirp from 'mkdirp';
-import { PassThrough } from 'stream';
+
+const cacache = require('cacache/en');
+const mkdirp = require('mkdirp');
+const PassThrough = require('stream').PassThrough;
 
 export default function(route: Router, auth: IAuth, storage: IStorageHandler, config: Config) {
   const can = allow(auth);
