@@ -46,16 +46,16 @@ exports.default = function (route, auth, storage, config) {
   route.get('/:package/-/:filename', can('access'), function (req, res) {
     const tarballCachePath = config.cache.tarball;
 
-    _en2.default.get.info(`${tarballCachePath}${req.params.package}`, req.params.filename).then(data => {
+    cacache.get.info(`${tarballCachePath}${req.params.package}`, req.params.filename).then(data => {
       let tarball;
       if (data) {
         console.log('From cache...');
-        tarball = _en2.default.get.stream(`${tarballCachePath}${req.params.package}`, req.params.filename);
+        tarball = cacache.get.stream(`${tarballCachePath}${req.params.package}`, req.params.filename);
       } else {
         console.log('From storage...');
         const stream = storage.getTarball(req.params.package, req.params.filename);
-        tarball = stream.pipe(new _stream.PassThrough());
-        stream.pipe(new _stream.PassThrough()).pipe(_en2.default.put.stream(`${tarballCachePath}${req.params.package}`, req.params.filename));
+        tarball = stream.pipe(new PassThrough());
+        stream.pipe(new PassThrough()).pipe(cacache.put.stream(`${tarballCachePath}${req.params.package}`, req.params.filename));
       }
 
       tarball.on('content-length', function (content) {
@@ -80,14 +80,8 @@ var _utils = require('../../../lib/utils');
 
 var _constants = require('../../../lib/constants');
 
-var _en = require('cacache/en');
-
-var _en2 = _interopRequireDefault(_en);
-
-var _mkdirp = require('mkdirp');
-
-var _mkdirp2 = _interopRequireDefault(_mkdirp);
-
-var _stream = require('stream');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const cacache = require('cacache/en');
+const mkdirp = require('mkdirp');
+const PassThrough = require('stream').PassThrough;

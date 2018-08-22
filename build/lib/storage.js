@@ -46,17 +46,12 @@ var _utils = require('./utils');
 
 var _configUtils = require('./config-utils');
 
-var _en = require('cacache/en');
-
-var _en2 = _interopRequireDefault(_en);
-
-var _mkdirp = require('mkdirp');
-
-var _mkdirp2 = _interopRequireDefault(_mkdirp);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+const cacache = require('cacache/en');
+const mkdirp = require('mkdirp');
 
 const LoggerApi = require('../lib/logger');
 
@@ -66,7 +61,7 @@ class Storage {
     this.config = config;
     this.uplinks = (0, _uplinkUtil.setupUpLinks)(config);
     this.logger = LoggerApi.logger.child();
-    this.metadataCachePath = config.packages.metadata;
+    this.metadataCachePath = config.cache.metadata;
   }
 
   init(config) {
@@ -302,9 +297,9 @@ class Storage {
    */
   getPackage(options) {
     const self = this;
-    _en2.default.get.info(this.metadataCachePath, options.name).then(data => {
+    cacache.get.info(self.metadataCachePath, options.name).then(data => {
       if (data) {
-        _en2.default.get(self.metadataCachePath, options.name).then(res => {
+        cacache.get(self.metadataCachePath, options.name).then(res => {
           options.callback(null, JSON.parse(res.data.toString()), null);
         });
       } else {
