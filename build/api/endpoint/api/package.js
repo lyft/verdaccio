@@ -49,10 +49,10 @@ exports.default = function (route, auth, storage, config) {
     cacache.get.info(`${tarballCachePath}${req.params.package}`, req.params.filename).then(data => {
       let tarball;
       if (data) {
-        console.log('From cache...');
+        console.log(`File from cache: ${req.params.filename}`);
         tarball = cacache.get.stream(`${tarballCachePath}${req.params.package}`, req.params.filename);
       } else {
-        console.log('From storage...');
+        console.log(`File from storage: ${req.params.filename}`);
         const stream = storage.getTarball(req.params.package, req.params.filename);
         tarball = stream.pipe(new PassThrough());
         stream.pipe(new PassThrough()).pipe(cacache.put.stream(`${tarballCachePath}${req.params.package}`, req.params.filename));

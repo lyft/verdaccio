@@ -282,10 +282,12 @@ class Storage implements IStorageHandler {
     const self = this;
     cacache.get.info(self.metadataCachePath, options.name).then((data) => {
       if (data) {
+        console.log(`Metadata from cache: ${options.name}`);
         cacache.get(self.metadataCachePath, options.name).then((res) => {
           options.callback(null, (JSON.parse(res.data.toString())), null);
         });        
       } else {
+        console.log(`Metadata from storage: ${options.name}`);
         self.localStorage.getPackageMetadata(options.name, (err, data) => {
           if (err && (!err.status || err.status >= HTTP_STATUS.INTERNAL_ERROR)) {
             // report internal errors right away
@@ -302,7 +304,9 @@ class Storage implements IStorageHandler {
     
               // npm can throw if this field doesn't exist
               result._attachments = {};
-    
+
+              cacache.put(self.metadataCachePath, options.name, JSON.stringify(result));       
+
               options.callback(null, result, uplinkErrors);
             });
         });
