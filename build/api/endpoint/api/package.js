@@ -61,7 +61,7 @@ exports.default = function (route, auth, storage, config) {
       tarball.on('content-length', function (content) {
         res.header('Content-Length', content);
       });
-      tarbal.on('error', function (err) {
+      tarball.on('error', function (err) {
         return res.report_error(err);
       });
       res.header('Content-Type', _constants.HEADERS.OCTET_STREAM);
