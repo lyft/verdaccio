@@ -40,12 +40,18 @@ var _utils = require('./utils');
 
 var _constants3 = require('./constants');
 
-var _mkdirp = require('mkdirp');
+var _request = require('request');
 
-var _mkdirp2 = _interopRequireDefault(_mkdirp);
+var _request2 = _interopRequireDefault(_request);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const mkdirp = require('mkdirp');
+// $FlowFixMe
+
+
+const cacache = require('cacache/en');
+const cron = require('node-cron');
 const logger = require('./logger');
 
 /**
@@ -59,10 +65,6 @@ const logger = require('./logger');
     - localhost:5557
     @return {Array}
  */
-
-// $FlowFixMe
-
-
 function getListListenAddresses(argListen, configListen) {
   // command line || config file || default
   let addresses;
@@ -104,8 +106,14 @@ function startVerdaccio(config, cliListen, configPath, pkgVersion, pkgName, call
   // Create cache folders
   for (let key in config.cache) {
     console.log(`Creating cache for ${key} at ${config.cache[key]}`);
-    if (!_fs2.default.existsSync(config.cache[key])) _mkdirp2.default.sync(config.cache[key]);
+    if (!_fs2.default.existsSync(config.cache[key])) mkdirp.sync(config.cache[key]);
   }
+
+  // Node cron
+  cron.schedule('*/10 * * * * *', function () {
+    updateMetadataCache(config.cache.metadata);
+    console.log('Running cron!');
+  });
 
   (0, _index2.default)(config).then(app => {
     const addresses = getListListenAddresses(cliListen, config.listen);
@@ -128,6 +136,23 @@ function startVerdaccio(config, cliListen, configPath, pkgVersion, pkgName, call
 
       callback(webServer, addr, pkgName, pkgVersion);
     });
+  });
+}
+
+function updateMetadataCache(cache) {
+  console.log('Updating metadata cache!');
+  cacache.ls(cache).then(data => {
+    const metadataCacheKeys = Object.keys(data);
+    console.log(metadataCacheKeys);
+  });
+
+  (0, _request2.default)({
+    url: 'http://localhost:8080/react',
+    method: 'GET'
+  }, function (err, res, body) {
+    console.log('error', error);
+    console.log('response', response);
+    console.log('body', body);
   });
 }
 

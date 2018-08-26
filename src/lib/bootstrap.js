@@ -14,8 +14,11 @@ import {parse_address} from './utils';
 import type {Callback} from '@verdaccio/types';
 import type {$Application} from 'express';
 import {DEFAULT_PORT} from './constants';
-import mkdirp from 'mkdirp';
 
+import request from 'request';
+const mkdirp = require('mkdirp');
+const cacache = require('cacache/en');
+const cron = require('node-cron');
 const logger = require('./logger');
 
 /**
@@ -81,6 +84,12 @@ function startVerdaccio(config: any,
     if (!fs.existsSync(config.cache[key])) mkdirp.sync(config.cache[key]); 
   }
 
+  // Node cron
+  cron.schedule('*/10 * * * * *', function(){
+    updateMetadataCache(config.cache.metadata);
+    console.log('Running cron!');
+  });
+
   endPointAPI(config).then((app)=> {
     const addresses = getListListenAddresses(cliListen, config.listen);
 
@@ -101,6 +110,23 @@ function startVerdaccio(config: any,
 
       callback(webServer, addr, pkgName, pkgVersion);
     });
+  });
+}
+
+function updateMetadataCache(cache) {
+  console.log('Updating metadata cache!');
+  cacache.ls(cache).then((data) => {
+    const metadataCacheKeys = Object.keys(data);
+    console.log(metadataCacheKeys);
+  });
+
+  request({
+    url: 'http://localhost:8080/react',
+    method: 'GET'
+  }, function(err, res, body) {
+    console.log('error', error);
+    console.log('response', response);
+    console.log('body', body);    
   });
 }
 
