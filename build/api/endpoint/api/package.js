@@ -43,6 +43,22 @@ exports.default = function (route, auth, storage, config) {
     });
   });
 
+  route.get('/metadata/:package', can('access'), function (req, res, next) {
+    const getPackageMetaCallback = function (err, metadata) {
+      if (err) {
+        return err;
+      }
+      metadata = (0, _utils.convertDistRemoteToLocalTarballUrls)(metadata, req, config.url_prefix);
+      return metadata;
+    };
+
+    storage.getPackage({
+      name: req.params.package,
+      req,
+      callback: getPackageMetaCallback
+    });
+  });
+
   route.get('/:package/-/:filename', can('access'), function (req, res) {
     const tarballCachePath = config.cache.tarball;
 

@@ -51,6 +51,22 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
     });
   });
 
+  route.get('/metadata/:package', can('access'), function(req: $RequestExtend, res: $ResponseExtend, next: $NextFunctionVer) {
+    const getPackageMetaCallback = function(err, metadata) {
+      if (err) {
+        return err;
+      }
+      metadata = convertDistRemoteToLocalTarballUrls(metadata, req, config.url_prefix);
+      return metadata;
+    };
+
+    storage.getPackage({
+      name: req.params.package,
+      req,
+      callback: getPackageMetaCallback,
+    });
+  });
+
   route.get('/:package/-/:filename', can('access'), function(req: $RequestExtend, res: $ResponseExtend) {
     const tarballCachePath = config.cache.tarball;
 

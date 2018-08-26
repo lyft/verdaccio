@@ -121,7 +121,7 @@ function updateMetadataCache(cache) {
   });
 
   request({
-    url: 'http://localhost:8080/react',
+    url: 'http://localhost:8080/metadata/react',
     method: 'GET'
   }, function(err, res, body) {
     console.log('error', error);
