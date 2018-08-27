@@ -287,30 +287,36 @@ class Storage implements IStorageHandler {
           options.callback(null, (JSON.parse(res.data.toString())), null);
         });        
       } else {
-        console.log(`Metadata from storage: ${options.name}`);
-        self.localStorage.getPackageMetadata(options.name, (err, data) => {
-          if (err && (!err.status || err.status >= HTTP_STATUS.INTERNAL_ERROR)) {
-            // report internal errors right away
+        return this.getPackageFromStorage(options);
+      }
+    });
+  }
+
+  getPackageFromStorage(options) {
+    const self = this;
+    console.log(`Metadata from storage: ${options.name}`);
+    self.localStorage.getPackageMetadata(options.name, (err, data) => {
+      if (err && (!err.status || err.status >= HTTP_STATUS.INTERNAL_ERROR)) {
+        // report internal errors right away
+        return options.callback(err);
+      }
+
+      self._syncUplinksMetadata(options.name, data, {req: options.req},
+        function getPackageSynUpLinksCallback(err, result: Package, uplinkErrors) {
+          if (err) {
             return options.callback(err);
           }
-    
-          self._syncUplinksMetadata(options.name, data, {req: options.req},
-            function getPackageSynUpLinksCallback(err, result: Package, uplinkErrors) {
-              if (err) {
-                return options.callback(err);
-              }
-    
-              normalizeDistTags(cleanUpLinksRef(options.keepUpLinkData, result));
-    
-              // npm can throw if this field doesn't exist
-              result._attachments = {};
 
-              cacache.put(self.metadataCachePath, options.name, JSON.stringify(result));       
+          normalizeDistTags(cleanUpLinksRef(options.keepUpLinkData, result));
 
-              options.callback(null, result, uplinkErrors);
-            });
+          // npm can throw if this field doesn't exist
+          result._attachments = {};
+
+          console.log(`Refreshing metadata for ${options.name}`);
+          cacache.put(self.metadataCachePath, options.name, JSON.stringify(result));       
+
+          options.callback(null, result, uplinkErrors);
         });
-      }
     });
   }
 

@@ -23,7 +23,7 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
       res.send(metadata);
     };
 
-    storage.getPackage({
+    storage.getPackageFromStorage({
       name: req.params.package,
       req,
       callback: getPackageMetaCallback,

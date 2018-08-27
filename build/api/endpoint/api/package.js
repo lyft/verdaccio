@@ -15,7 +15,7 @@ exports.default = function (route, auth, storage, config) {
       res.send(metadata);
     };
 
-    storage.getPackage({
+    storage.getPackageFromStorage({
       name: req.params.package,
       req,
       callback: getPackageMetaCallback

@@ -1,7 +1,7 @@
 /*!
  * 
  *     Name: vendors
- *     Generated on: 1535329986729
+ *     Generated on: 1535339407872
  *     Package: verdaccio
  *     Version: v3.6.0
  *     License: MIT

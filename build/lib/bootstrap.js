@@ -149,19 +149,14 @@ function updateMetadataCache(cache) {
     // Update each key in cache
     for (pkg of metadataCacheKeys) {
       console.log(`Updating ${pkg}...`);
-
       (0, _request2.default)({
         url: 'http://localhost:8080/metadata/${pkg}',
         method: 'GET'
       }, function (err, res, body) {
-        // If metadata is not found, wipe the cache of that package
-        if (err) {
-          cacache.rm.entry(cache, pkg);
+        if (err || body.error) {
+          console.log(`Updating ${pkg} failed!`);
         }
-
-        // Update cache entry with fresh data
         console.log(`Updated ${pkg}`);
-        cacache.put(cache, pkg, JSON.stringify(body));
       });
     }
 

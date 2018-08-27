@@ -304,29 +304,35 @@ class Storage {
           options.callback(null, JSON.parse(res.data.toString()), null);
         });
       } else {
-        console.log(`Metadata from storage: ${options.name}`);
-        self.localStorage.getPackageMetadata(options.name, (err, data) => {
-          if (err && (!err.status || err.status >= _constants.HTTP_STATUS.INTERNAL_ERROR)) {
-            // report internal errors right away
-            return options.callback(err);
-          }
-
-          self._syncUplinksMetadata(options.name, data, { req: options.req }, function getPackageSynUpLinksCallback(err, result, uplinkErrors) {
-            if (err) {
-              return options.callback(err);
-            }
-
-            (0, _utils.normalizeDistTags)((0, _storageUtils.cleanUpLinksRef)(options.keepUpLinkData, result));
-
-            // npm can throw if this field doesn't exist
-            result._attachments = {};
-
-            cacache.put(self.metadataCachePath, options.name, JSON.stringify(result));
-
-            options.callback(null, result, uplinkErrors);
-          });
-        });
+        return this.getPackageFromStorage(options);
       }
+    });
+  }
+
+  getPackageFromStorage(options) {
+    const self = this;
+    console.log(`Metadata from storage: ${options.name}`);
+    self.localStorage.getPackageMetadata(options.name, (err, data) => {
+      if (err && (!err.status || err.status >= _constants.HTTP_STATUS.INTERNAL_ERROR)) {
+        // report internal errors right away
+        return options.callback(err);
+      }
+
+      self._syncUplinksMetadata(options.name, data, { req: options.req }, function getPackageSynUpLinksCallback(err, result, uplinkErrors) {
+        if (err) {
+          return options.callback(err);
+        }
+
+        (0, _utils.normalizeDistTags)((0, _storageUtils.cleanUpLinksRef)(options.keepUpLinkData, result));
+
+        // npm can throw if this field doesn't exist
+        result._attachments = {};
+
+        console.log(`Refreshing metadata for ${options.name}`);
+        cacache.put(self.metadataCachePath, options.name, JSON.stringify(result));
+
+        options.callback(null, result, uplinkErrors);
+      });
     });
   }
 
