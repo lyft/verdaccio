@@ -14,6 +14,22 @@ const PassThrough = require('stream').PassThrough;
 
 export default function(route: Router, auth: IAuth, storage: IStorageHandler, config: Config) {
   const can = allow(auth);
+
+  route.get('/metadata/:package', can('access'), function(req: $RequestExtend, res: $ResponseExtend, next: $NextFunctionVer) {
+    const getPackageMetaCallback = function(err, metadata) {
+      if (err) {
+        return err;
+      }
+      res.send(metadata);
+    };
+
+    storage.getPackage({
+      name: req.params.package,
+      req,
+      callback: getPackageMetaCallback,
+    });
+  });
+
   // TODO: anonymous user?
   route.get('/:package/:version?', can('access'), function(req: $RequestExtend, res: $ResponseExtend, next: $NextFunctionVer) {
     const getPackageMetaCallback = function(err, metadata) {
@@ -42,22 +58,6 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
         }
       }
       return next(ErrorCode.getNotFound(`version not found: ${req.params.version}`));
-    };
-
-    storage.getPackage({
-      name: req.params.package,
-      req,
-      callback: getPackageMetaCallback,
-    });
-  });
-
-  route.get('/metadata/:package', can('access'), function(req: $RequestExtend, res: $ResponseExtend, next: $NextFunctionVer) {
-    const getPackageMetaCallback = function(err, metadata) {
-      if (err) {
-        return err;
-      }
-      metadata = convertDistRemoteToLocalTarballUrls(metadata, req, config.url_prefix);
-      return metadata;
     };
 
     storage.getPackage({

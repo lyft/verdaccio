@@ -115,18 +115,32 @@ function startVerdaccio(config: any,
 
 function updateMetadataCache(cache) {
   console.log('Updating metadata cache!');
+
+  // Get all keys in cache
   cacache.ls(cache).then((data) => {
     const metadataCacheKeys = Object.keys(data);
-    console.log(metadataCacheKeys);
-  });
 
-  request({
-    url: 'http://localhost:8080/metadata/react',
-    method: 'GET'
-  }, function(err, res, body) {
-    console.log('error', error);
-    console.log('response', response);
-    console.log('body', body);    
+    // Update each key in cache
+    for (pkg of metadataCacheKeys) {
+      console.log(`Updating ${pkg}...`);
+
+      request({
+        url: 'http://localhost:8080/metadata/${pkg}',
+        method: 'GET'
+      }, 
+      function(err, res, body) { 
+        // If metadata is not found, wipe the cache of that package
+        if (err) {
+          cacache.rm.entry(cache, pkg);
+        }
+
+        // Update cache entry with fresh data
+        console.log(`Updated ${pkg}`);
+        cacache.put(cache, pkg, JSON.stringify(body));
+      });
+    }
+
+    cacache.verify(cache);
   });
 }
 

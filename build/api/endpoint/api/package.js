@@ -6,6 +6,22 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.default = function (route, auth, storage, config) {
   const can = (0, _middleware.allow)(auth);
+
+  route.get('/metadata/:package', can('access'), function (req, res, next) {
+    const getPackageMetaCallback = function (err, metadata) {
+      if (err) {
+        return err;
+      }
+      res.send(metadata);
+    };
+
+    storage.getPackage({
+      name: req.params.package,
+      req,
+      callback: getPackageMetaCallback
+    });
+  });
+
   // TODO: anonymous user?
   route.get('/:package/:version?', can('access'), function (req, res, next) {
     const getPackageMetaCallback = function (err, metadata) {
@@ -34,22 +50,6 @@ exports.default = function (route, auth, storage, config) {
         }
       }
       return next(_utils.ErrorCode.getNotFound(`version not found: ${req.params.version}`));
-    };
-
-    storage.getPackage({
-      name: req.params.package,
-      req,
-      callback: getPackageMetaCallback
-    });
-  });
-
-  route.get('/metadata/:package', can('access'), function (req, res, next) {
-    const getPackageMetaCallback = function (err, metadata) {
-      if (err) {
-        return err;
-      }
-      metadata = (0, _utils.convertDistRemoteToLocalTarballUrls)(metadata, req, config.url_prefix);
-      return metadata;
     };
 
     storage.getPackage({
