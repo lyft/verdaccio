@@ -10,7 +10,7 @@ exports.default = function (route, auth, storage, config) {
   route.get('/metadata/:package', can('access'), function (req, res, next) {
     const getPackageMetaCallback = function (err, metadata) {
       if (err) {
-        return err;
+        res.send(err);
       }
       res.send(metadata);
     };

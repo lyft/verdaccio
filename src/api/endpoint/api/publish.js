@@ -14,6 +14,8 @@ import type {Config, Callback} from '@verdaccio/types';
 import type {IAuth, $ResponseExtend, $RequestExtend, $NextFunctionVer, IStorageHandler} from '../../../../types';
 import logger from '../../../lib/logger';
 
+const cacache = require('cacache/en');
+
 export default function(router: Router, auth: IAuth, storage: IStorageHandler, config: Config) {
   const can = allow(auth);
 
@@ -134,6 +136,10 @@ export default function(router: Router, auth: IAuth, storage: IStorageHandler, c
       if (err) {
         return next(err);
       }
+
+      // Remove package from cache
+      cacache.rm.entry(config.cache.metadata, req.params.package);
+
       res.status(201);
       return next({ok: API_MESSAGE.PKG_REMOVED});
     });
@@ -146,6 +152,10 @@ export default function(router: Router, auth: IAuth, storage: IStorageHandler, c
       if (err) {
         return next(err);
       }
+
+      // Remove tarball from cache
+      cacache.rm.entry(`${config.cache.metadata}${req.params.package}`, req.params.filename);    
+        
       res.status(201);
       return next({ok: API_MESSAGE.TARBALL_REMOVED});
     });

@@ -18,7 +18,7 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
   route.get('/metadata/:package', can('access'), function(req: $RequestExtend, res: $ResponseExtend, next: $NextFunctionVer) {
     const getPackageMetaCallback = function(err, metadata) {
       if (err) {
-        return err;
+        res.send(err);
       }
       res.send(metadata);
     };

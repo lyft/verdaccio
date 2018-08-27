@@ -4,6 +4,41 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.listenDefaultCallback = exports.startVerdaccio = undefined;
+
+let updateMetadataCache = (() => {
+  var _ref = _asyncToGenerator(function* (cache) {
+    console.log('******************************************');
+    console.log('Updating metadata cache!');
+
+    yield cacache.verify(cache);
+
+    // Get all keys in cache
+    cacache.ls(cache).then(function (data) {
+      const metadataCacheKeys = Object.keys(data);
+
+      // Update each key in cache
+      for (let pkg of metadataCacheKeys) {
+        pkg = pkg.replace('/', '%2F');
+        console.log(`Updating ${pkg}...`);
+        (0, _request2.default)({
+          url: `http://localhost:8080/metadata/${pkg}`,
+          method: 'GET'
+        }, function (err, res, body) {
+          if (err || body.error) {
+            console.log(`Updating ${pkg} failed!`);
+          } else {
+            console.log(`Updated ${pkg}`);
+          }
+        });
+      }
+    });
+  });
+
+  return function updateMetadataCache(_x) {
+    return _ref.apply(this, arguments);
+  };
+})();
+
 exports.getListListenAddresses = getListListenAddresses;
 
 var _lodash = require('lodash');
@@ -46,10 +81,11 @@ var _request2 = _interopRequireDefault(_request);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const mkdirp = require('mkdirp');
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 // $FlowFixMe
 
 
+const mkdirp = require('mkdirp');
 const cacache = require('cacache/en');
 const cron = require('node-cron');
 const logger = require('./logger');
@@ -136,31 +172,6 @@ function startVerdaccio(config, cliListen, configPath, pkgVersion, pkgName, call
 
       callback(webServer, addr, pkgName, pkgVersion);
     });
-  });
-}
-
-function updateMetadataCache(cache) {
-  console.log('Updating metadata cache!');
-
-  // Get all keys in cache
-  cacache.ls(cache).then(data => {
-    const metadataCacheKeys = Object.keys(data);
-
-    // Update each key in cache
-    for (pkg of metadataCacheKeys) {
-      console.log(`Updating ${pkg}...`);
-      (0, _request2.default)({
-        url: 'http://localhost:8080/metadata/${pkg}',
-        method: 'GET'
-      }, function (err, res, body) {
-        if (err || body.error) {
-          console.log(`Updating ${pkg} failed!`);
-        }
-        console.log(`Updated ${pkg}`);
-      });
-    }
-
-    cacache.verify(cache);
   });
 }
 

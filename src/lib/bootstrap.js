@@ -113,28 +113,33 @@ function startVerdaccio(config: any,
   });
 }
 
-function updateMetadataCache(cache) {
+async function updateMetadataCache(cache) {
+  console.log('******************************************');
   console.log('Updating metadata cache!');
+
+  await cacache.verify(cache);
 
   // Get all keys in cache
   cacache.ls(cache).then((data) => {
     const metadataCacheKeys = Object.keys(data);
 
     // Update each key in cache
-    for (pkg of metadataCacheKeys) {
+    for (let pkg of metadataCacheKeys) {
+      pkg = pkg.replace('/', '%2F');
       console.log(`Updating ${pkg}...`);
       request({
-        url: 'http://localhost:8080/metadata/${pkg}',
+        url: `http://localhost:8080/metadata/${pkg}`,
         method: 'GET'
       }, 
-      function(err, res, body) { 
+      function(err, res, body) {
         if (err || body.error) { console.log(`Updating ${pkg} failed!`); }
-        console.log(`Updated ${pkg}`);
+        else {
+          console.log(`Updated ${pkg}`);
+        }
       });
     }
-
-    cacache.verify(cache);
   });
+  
 }
 
 function unlinkAddressPath(addr) {

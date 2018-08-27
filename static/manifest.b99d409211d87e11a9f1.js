@@ -1,7 +1,7 @@
 /*!
  * 
  *     Name: manifest
- *     Generated on: 1535339407872
+ *     Generated on: 1535347467792
  *     Package: verdaccio
  *     Version: v3.6.0
  *     License: MIT
