@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form, Button, Dialog, Input, Alert} from 'element-react';
+import {Button} from 'element-react';
 import isString from 'lodash/isString';
 import isNumber from 'lodash/isNumber';
 import capitalize from 'lodash/capitalize';
@@ -179,66 +179,7 @@ export default class Header extends React.Component {
           <Link to="/">
             <img src={logo} className={classes.logo} />
           </Link>
-          <figure>
-            npm set { scope }registry { registryURL }
-            <br/>
-            npm adduser --registry { registryURL }
-          </figure>
-
-          <div className={classes.headerRight}>
-            {this.renderUserActionButton()}
-          </div>
         </div>
-
-        <Dialog
-          title="Login"
-          size="tiny"
-          visible={showLogin}
-          onCancel={this.toggleLoginModal}
-        >
-          <Form className="login-form">
-            <Dialog.Body>
-              {loginError && (
-                <Alert
-                  title={loginError.title}
-                  type={loginError.type}
-                  description={loginError.description}
-                  showIcon={true}
-                  closable={false}
-                />
-              )}
-              <br />
-              <Input
-                name="username"
-                placeholder="Username"
-                onChange={this.handleInput.bind(this, 'username')}
-              />
-              <br />
-              <br />
-              <Input
-                name="password"
-                type="password"
-                placeholder="Type your password"
-                onChange={this.handleInput.bind(this, 'password')}
-              />
-            </Dialog.Body>
-            <Dialog.Footer className="dialog-footer">
-              <Button
-                onClick={this.toggleLoginModal}
-                className="cancel-login-button"
-              >
-                Cancel
-              </Button>
-              <Button
-                nativeType="submit"
-                className="login-button"
-                onClick={this.handleSubmit}
-              >
-                Login
-              </Button>
-            </Dialog.Footer>
-          </Form>
-        </Dialog>
       </header>
     );
   }
