@@ -1,7 +1,7 @@
 /*!
  * 
  *     Name: 6
- *     Generated on: 1535487800952
+ *     Generated on: 1535489197013
  *     Package: verdaccio
  *     Version: v3.6.0
  *     License: MIT
