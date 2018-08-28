@@ -66,7 +66,7 @@ export default class Detail extends React.Component {
     } else if (isEmpty(readMe)) {
       return <Loading text={loadingMessage} />;
     }
-    const style = {marginTop: '70px'};
+    const style = {marginTop: 70+'px'};
     return (
       <div className={classes.twoColumn} style={style}>
         <PackageDetail readMe={readMe} packageName={this.packageName}/>
