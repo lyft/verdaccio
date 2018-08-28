@@ -67,7 +67,7 @@ export default class Detail extends React.Component {
       return <Loading text={loadingMessage} />;
     }
     return (
-      <div className={classes.twoColumn} style={{marginTop: '70px'}}>
+      <div className={classes.twoColumn}>
         <PackageDetail readMe={readMe} packageName={this.packageName}/>
         <PackageSidebar packageName={this.packageName} />
       </div>
