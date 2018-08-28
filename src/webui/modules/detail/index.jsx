@@ -66,9 +66,8 @@ export default class Detail extends React.Component {
     } else if (isEmpty(readMe)) {
       return <Loading text={loadingMessage} />;
     }
-    const style = {marginTop: 70+'px'};
     return (
-      <div className={classes.twoColumn} style={style}>
+      <div className={classes.twoColumn} style={{marginTop: '70px'}}>
         <PackageDetail readMe={readMe} packageName={this.packageName}/>
         <PackageSidebar packageName={this.packageName} />
       </div>
