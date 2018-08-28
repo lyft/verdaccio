@@ -17,11 +17,18 @@
     @include container-size;
   }
 
+	@-webkit-keyframes lavalamp {
+		0% {fill: #0dc98b;} 
+		33% {fill: #8f91ff;}
+		66% {fill: #0f7abc;}
+		100% {fill: #0dc98b;}
+	}  
   svg {
     height: 45px;
     width: 45px;
     margin-top: 5px;
     vertical-align: middle;
+    animation: lavalamp 10s infinite;
   }
 }
 
