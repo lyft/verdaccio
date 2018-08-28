@@ -24,7 +24,7 @@ const Search = (props) => {
 };
 
 Search.defaultProps = {
-  placeHolder: 'Type to search...'
+  placeHolder: 'search packages'
 };
 
 Search.propTypes = {

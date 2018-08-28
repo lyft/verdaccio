@@ -31,7 +31,7 @@ export default class PackageList extends React.Component {
       return;
     }
 
-    return <h1 className={classes.listTitle}>Available Packages</h1>;
+    return <h1 className={classes.listTitle}>{this.props.packages.length} Packages</h1>;
   }
 
   renderList() {
