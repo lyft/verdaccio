@@ -98,8 +98,9 @@ export default class Home extends React.Component {
   }
 
   render() {
+    const style = {marginTop: '70px'};
     return (
-      <div>
+      <div style={style}>
         {this.renderSearchBar()}
         {this.state.loading ? this.renderLoading() : this.renderPackageList()}
       </div>

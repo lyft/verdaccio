@@ -9,12 +9,11 @@ const DetailPackage = asyncComponent(() => import('./modules/detail'));
 const HomePage = asyncComponent(() => import('./modules/home'));
 
 const RouterApp = () => {
-  const containerStyle = {marginTop: '70px'};
   return (
     <Router>
       <div className="page-full-height">
         <Header/>
-        <div className="container" style={containerStyle}>
+        <div className="container">
           <Switch>
             <Route exact path="/(search/:keyword)?" component={ HomePage } />
             <Route exact path="/detail/@:scope/:package" component={DetailPackage} />
