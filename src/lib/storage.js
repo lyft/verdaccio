@@ -312,7 +312,6 @@ class Storage implements IStorageHandler {
           // npm can throw if this field doesn't exist
           result._attachments = {};
 
-          console.debug(`Refreshing metadata for ${options.name}`);
           cacache.put(self.metadataCachePath, options.name, JSON.stringify(result));       
 
           options.callback(null, result, uplinkErrors);

@@ -115,7 +115,6 @@ function startVerdaccio(config: any,
 }
 
 async function updateMetadataCache(cache) {
-  console.debug('******************************************');
   console.debug('Updating metadata cache!');
 
   await cacache.verify(cache);
@@ -127,7 +126,6 @@ async function updateMetadataCache(cache) {
     // Update each key in cache
     for (let pkg of metadataCacheKeys) {
       pkg = pkg.replace('/', '%2F');
-      console.debug(`Updating ${pkg}...`);
       request({
         url: `http://localhost:8080/metadata/${pkg}`,
         method: 'GET'
