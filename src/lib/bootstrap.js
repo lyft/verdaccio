@@ -80,7 +80,7 @@ function startVerdaccio(config: any,
 
   // Create cache folders
   for (let key in config.cache) {
-    console.log(`Creating cache for ${key} at ${config.cache[key]}`);
+    console.debug(`Creating cache for ${key} at ${config.cache[key]}`);
     if (!fs.existsSync(config.cache[key])) mkdirp.sync(config.cache[key]); 
   }
 
@@ -115,8 +115,8 @@ function startVerdaccio(config: any,
 }
 
 async function updateMetadataCache(cache) {
-  console.log('******************************************');
-  console.log('Updating metadata cache!');
+  console.debug('******************************************');
+  console.debug('Updating metadata cache!');
 
   await cacache.verify(cache);
 
@@ -127,15 +127,15 @@ async function updateMetadataCache(cache) {
     // Update each key in cache
     for (let pkg of metadataCacheKeys) {
       pkg = pkg.replace('/', '%2F');
-      console.log(`Updating ${pkg}...`);
+      console.debug(`Updating ${pkg}...`);
       request({
         url: `http://localhost:8080/metadata/${pkg}`,
         method: 'GET'
       }, 
       function(err, res, body) {
-        if (err || body.error) { console.log(`Updating ${pkg} failed!`); }
+        if (err || body.error) { console.debug(`Updating ${pkg} failed!`); }
         else {
-          console.log(`Updated ${pkg}`);
+          console.debug(`Updated ${pkg}`);
         }
       });
     }

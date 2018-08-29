@@ -73,10 +73,10 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
     cacache.get.info(`${tarballCachePath}${req.params.package}`, req.params.filename).then((data) => {
       let tarball;
       if (data) {
-        console.log(`File from cache: ${req.params.filename}`);
+        console.debug(`File from cache: ${req.params.filename}`);
         tarball = cacache.get.stream(`${tarballCachePath}${req.params.package}`, req.params.filename);
       } else {
-        console.log(`File from storage: ${req.params.filename}`);
+        console.debug(`File from storage: ${req.params.filename}`);
         const stream = storage.getTarball(req.params.package, req.params.filename);
         tarball = stream.pipe(new PassThrough());
         stream.pipe(new PassThrough()).pipe(
