@@ -85,7 +85,7 @@ function startVerdaccio(config: any,
   }
 
   // Node cron
-  cron.schedule('*/10 * * * * *', function(){
+  cron.schedule('0 0 3 * * *', function(){
     updateMetadataCache(config.cache.metadata);
     console.log('Running cron!');
   });
