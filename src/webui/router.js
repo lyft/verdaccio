@@ -22,7 +22,6 @@ const RouterApp = (props) => {
             <Route exact path="/detail/:package" component={DetailPackage} />
           </Switch>
         </div>
-        <Footer/>
       </div>
     </Router>
   );
