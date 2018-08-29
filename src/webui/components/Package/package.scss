@@ -63,25 +63,5 @@
       width: 30%;
       text-align: right;
     }
-
-    &:hover {
-      &::before {
-        content: '';
-        display: block;
-        background: rgba(255, 255, 255, 0.7);
-        @include fullSize;
-      }
-
-      &::after {
-        display: block;
-        position: absolute;
-        top: 50%;
-        right: 0;
-        left: 0;
-        text-align: center;
-        transform: translateY(-50%);
-        font-size: $font-size-md;
-      }
-    }
   }
 }

@@ -1,6 +1,13 @@
 @import '../../styles/variables';
 @import '../../styles/mixins';
 
+@-webkit-keyframes borderlava {
+  0% {border-bottom-color: #0dc98b;} 
+  33% {border-bottom-color: #8f91ff;}
+  66% {border-bottom-color: #0f7abc;}
+  100% {border-bottom-color: #0dc98b;}
+}
+
 .header {
   display: flex;
   height: 70px;
@@ -10,12 +17,14 @@
   color: $white;
   z-index:1;
   position: fixed;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  animation: borderlava 10s infinite;
 
   .headerWrap {
     display: flex;
     align-items: center;
     @include container-size;
+    padding-top:5px;
   }
 
 	@-webkit-keyframes lavalamp {
@@ -23,12 +32,13 @@
 		33% {fill: #8f91ff;}
 		66% {fill: #0f7abc;}
 		100% {fill: #0dc98b;}
-	}  
-  svg {
+  }
+  
+  .logo {
     height: 45px;
     width: 45px;
-    margin-top: 5px;
     vertical-align: middle;
     animation: lavalamp 10s infinite;
+    margin-right: 20px;
   }
 }
