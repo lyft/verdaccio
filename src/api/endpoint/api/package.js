@@ -9,7 +9,6 @@ import type {Config} from '@verdaccio/types';
 import type {IAuth, $ResponseExtend, $RequestExtend, $NextFunctionVer, IStorageHandler} from '../../../../types';
 
 const cacache = require('cacache/en');
-const mkdirp = require('mkdirp');
 const PassThrough = require('stream').PassThrough;
 
 export default function(route: Router, auth: IAuth, storage: IStorageHandler, config: Config) {
@@ -68,19 +67,19 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
   });
 
   route.get('/:package/-/:filename', can('access'), function(req: $RequestExtend, res: $ResponseExtend) {
-    const tarballCachePath = config.cache.tarball;
+    const packageCachePath = config.cache.package;
 
-    cacache.get.info(`${tarballCachePath}${req.params.package}`, req.params.filename).then((data) => {
+    cacache.get.info(`${packageCachePath}${req.params.package}`, req.params.filename).then((data) => {
       let tarball;
       if (data) {
         console.debug(`File from cache: ${req.params.filename}`);
-        tarball = cacache.get.stream(`${tarballCachePath}${req.params.package}`, req.params.filename);
+        tarball = cacache.get.stream(`${packageCachePath}${req.params.package}`, req.params.filename);
       } else {
         console.debug(`File from storage: ${req.params.filename}`);
         const stream = storage.getTarball(req.params.package, req.params.filename);
         tarball = stream.pipe(new PassThrough());
         stream.pipe(new PassThrough()).pipe(
-          cacache.put.stream(`${tarballCachePath}${req.params.package}`, req.params.filename)
+          cacache.put.stream(`${packageCachePath}${req.params.package}`, req.params.filename)
         );
       }
 
