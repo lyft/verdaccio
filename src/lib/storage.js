@@ -29,7 +29,6 @@ import type {IReadTarball, IUploadTarball} from '@verdaccio/streams';
 import {hasProxyTo} from './config-utils';
 
 const cacache = require('cacache/en');
-const mkdirp = require('mkdirp');
 
 const LoggerApi = require('../lib/logger');
 
@@ -281,14 +280,13 @@ class Storage implements IStorageHandler {
   getPackage(options: any) {
     const self = this;
     cacache.get.info(self.metadataCachePath, options.name).then((data) => {
-      if (data) {
-        console.debug(`Metadata from cache: ${options.name}`);
-        cacache.get(self.metadataCachePath, options.name).then((res) => {
-          options.callback(null, (JSON.parse(res.data.toString())), null);
-        });        
-      } else {
+      if (!data) {
         return this.getPackageFromStorage(options);
       }
+      console.debug(`Metadata from cache: ${options.name}`);
+      cacache.get(self.metadataCachePath, options.name).then((res) => {
+        options.callback(null, (JSON.parse(res.data.toString())), null);
+      });            
     });
   }
 
