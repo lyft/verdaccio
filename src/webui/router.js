@@ -4,7 +4,6 @@ import {HashRouter as Router, Route, Switch} from 'react-router-dom';
 import {asyncComponent} from './utils/asyncComponent';
 
 import Header from './components/Header';
-import Footer from './components/Footer';
 
 const DetailPackage = asyncComponent(() => import('./modules/detail'));
 const HomePage = asyncComponent(() => import('./modules/home'));
