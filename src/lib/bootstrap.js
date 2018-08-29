@@ -85,10 +85,11 @@ function startVerdaccio(config: any,
   }
 
   // Node cron
-  cron.schedule('0 0 3 * * *', function(){
-    updateMetadataCache(config.cache.metadata);
-    console.log('Running cron!');
-  });
+  if (config.cache.cron_schedule) {
+    cron.schedule(config.cache.cron_schedule, function(){
+      updateMetadataCache(config.cache.metadata);
+    });
+  }
 
   endPointAPI(config).then((app)=> {
     const addresses = getListListenAddresses(cliListen, config.listen);
