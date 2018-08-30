@@ -24,7 +24,7 @@ exports.default = function (route, auth, storage, config) {
 
   // TODO: anonymous user?
   route.get('/:package/:version?', can('access'), function (req, res, next) {
-    const getPackageMetaCallback = function (err, metadata) {
+    const getPackageMetaCallback = function (err, metadata, calledFromStorage) {
       if (err) {
         return next(err);
       }
@@ -49,7 +49,20 @@ exports.default = function (route, auth, storage, config) {
           }
         }
       }
+
+      // If version not found and callback was from getPackage not getPackageFromStorage
+      if (!calledFromStorage) {
+        versionNotFound();
+      }
       return next(_utils.ErrorCode.getNotFound(`version not found: ${req.params.version}`));
+    };
+
+    const versionNotFound = function () {
+      storage.getPackageFromStorage({
+        name: req.params.package,
+        req,
+        callback: getPackageMetaCallback
+      });
     };
 
     storage.getPackage({

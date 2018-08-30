@@ -17,9 +17,8 @@ let updateMetadataCache = (() => {
 
       // Update each key in cache
       for (let pkg of metadataCacheKeys) {
-        pkg = pkg.replace('/', '%2F');
         (0, _request2.default)({
-          url: `http://localhost:8080/metadata/${pkg}`,
+          url: `http://localhost:8080/metadata/${encodeURIComponent(pkg)}`,
           method: 'GET'
         }, function (err, res, body) {
           if (err || body.error) {
