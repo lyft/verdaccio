@@ -31,7 +31,7 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
 
   // TODO: anonymous user?
   route.get('/:package/:version?', can('access'), function(req: $RequestExtend, res: $ResponseExtend, next: $NextFunctionVer) {
-    const getPackageMetaCallback = function(err, metadata) {
+    const getPackageMetaCallback = function(err, metadata, calledFromStorage) {
       if (err) {
         return next(err);
       }

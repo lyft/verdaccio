@@ -285,7 +285,7 @@ class Storage implements IStorageHandler {
       }
       console.debug(`Metadata from cache: ${options.name}`);
       cacache.get(self.metadataCachePath, options.name).then((res) => {
-        options.callback(null, (JSON.parse(res.data.toString())), null);
+        options.callback(null, (JSON.parse(res.data.toString())), null, false);
       });            
     });
   }
@@ -312,7 +312,7 @@ class Storage implements IStorageHandler {
 
           cacache.put(self.metadataCachePath, options.name, JSON.stringify(result));       
 
-          options.callback(null, result, uplinkErrors);
+          options.callback(null, result, uplinkErrors, true);
         });
     });
   }
