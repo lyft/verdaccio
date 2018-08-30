@@ -56,8 +56,21 @@ export default function(route: Router, auth: IAuth, storage: IStorageHandler, co
           }
         }
       }
+
+      // If version not found and callback was from getPackage not getPackageFromStorage
+      if (!calledFromStorage) {
+        versionNotFound();
+      }
       return next(ErrorCode.getNotFound(`version not found: ${req.params.version}`));
     };
+
+    const versionNotFound = function() {
+      storage.getPackageFromStorage({
+        name: req.params.package,
+        req,
+        callback: getPackageMetaCallback,
+      });
+    }
 
     storage.getPackage({
       name: req.params.package,
