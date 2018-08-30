@@ -51,7 +51,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 const cacache = require('cacache/en');
-const mkdirp = require('mkdirp');
 
 const LoggerApi = require('../lib/logger');
 
@@ -298,20 +297,19 @@ class Storage {
   getPackage(options) {
     const self = this;
     cacache.get.info(self.metadataCachePath, options.name).then(data => {
-      if (data) {
-        console.log(`Metadata from cache: ${options.name}`);
-        cacache.get(self.metadataCachePath, options.name).then(res => {
-          options.callback(null, JSON.parse(res.data.toString()), null);
-        });
-      } else {
+      if (!data) {
         return this.getPackageFromStorage(options);
       }
+      console.debug(`Metadata from cache: ${options.name}`);
+      cacache.get(self.metadataCachePath, options.name).then(res => {
+        options.callback(null, JSON.parse(res.data.toString()), null);
+      });
     });
   }
 
   getPackageFromStorage(options) {
     const self = this;
-    console.log(`Metadata from storage: ${options.name}`);
+    console.debug(`Metadata from storage: ${options.name}`);
     self.localStorage.getPackageMetadata(options.name, (err, data) => {
       if (err && (!err.status || err.status >= _constants.HTTP_STATUS.INTERNAL_ERROR)) {
         // report internal errors right away
@@ -328,7 +326,6 @@ class Storage {
         // npm can throw if this field doesn't exist
         result._attachments = {};
 
-        console.log(`Refreshing metadata for ${options.name}`);
         cacache.put(self.metadataCachePath, options.name, JSON.stringify(result));
 
         options.callback(null, result, uplinkErrors);

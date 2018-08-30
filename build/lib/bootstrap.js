@@ -7,8 +7,7 @@ exports.listenDefaultCallback = exports.startVerdaccio = undefined;
 
 let updateMetadataCache = (() => {
   var _ref = _asyncToGenerator(function* (cache) {
-    console.log('******************************************');
-    console.log('Updating metadata cache!');
+    console.debug('Updating metadata cache!');
 
     yield cacache.verify(cache);
 
@@ -19,15 +18,14 @@ let updateMetadataCache = (() => {
       // Update each key in cache
       for (let pkg of metadataCacheKeys) {
         pkg = pkg.replace('/', '%2F');
-        console.log(`Updating ${pkg}...`);
         (0, _request2.default)({
           url: `http://localhost:8080/metadata/${pkg}`,
           method: 'GET'
         }, function (err, res, body) {
           if (err || body.error) {
-            console.log(`Updating ${pkg} failed!`);
+            console.debug(`Updating ${pkg} failed!`);
           } else {
-            console.log(`Updated ${pkg}`);
+            console.debug(`Updated ${pkg}`);
           }
         });
       }
@@ -141,15 +139,16 @@ function startVerdaccio(config, cliListen, configPath, pkgVersion, pkgName, call
 
   // Create cache folders
   for (let key in config.cache) {
-    console.log(`Creating cache for ${key} at ${config.cache[key]}`);
+    console.debug(`Creating cache for ${key} at ${config.cache[key]}`);
     if (!_fs2.default.existsSync(config.cache[key])) mkdirp.sync(config.cache[key]);
   }
 
   // Node cron
-  cron.schedule('*/10 * * * * *', function () {
-    updateMetadataCache(config.cache.metadata);
-    console.log('Running cron!');
-  });
+  if (config.cache.cron_schedule) {
+    cron.schedule(config.cache.cron_schedule, function () {
+      updateMetadataCache(config.cache.metadata);
+    });
+  }
 
   (0, _index2.default)(config).then(app => {
     const addresses = getListListenAddresses(cliListen, config.listen);
