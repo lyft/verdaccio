@@ -5,10 +5,6 @@ import Search from '../../components/Search';
 import PropTypes from 'prop-types';
 
 export default class Header extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   static propTypes = {
     handler: PropTypes.func
   };

@@ -24,16 +24,16 @@
     display: flex;
     align-items: center;
     @include container-size;
-    padding-top:5px;
+    padding-top: 5px;
   }
-
+  
 	@-webkit-keyframes lavalamp {
 		0% {fill: #0dc98b;} 
 		33% {fill: #8f91ff;}
 		66% {fill: #0f7abc;}
 		100% {fill: #0dc98b;}
   }
-  
+
   .logo {
     height: 45px;
     width: 45px;

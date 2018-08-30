@@ -15,11 +15,9 @@ export default class App extends React.Component {
     super(props);
     this.state = {filter: ''};
 
-    this.changeFilter = this.changeFilter.bind(this);
-  }
-
-  changeFilter(newFilter) {
-    this.setState({filter: newFilter.target.value.trim()});
+    this.changeFilter = (newFilter) => {
+      this.setState({ filter: newFilter.target.value.trim() });
+    }
   }
 
   render() {
