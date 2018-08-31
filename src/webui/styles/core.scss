@@ -1,4 +1,5 @@
 @import "variables";
+@import "lyft";
 
 html,
 body {
@@ -9,7 +10,7 @@ body {
     font-family: $font-family-base;
     font-size: $font-size-base;
     color: $text-color;
-    background-color: #fafbfc;
+    background-color: $lyft-off-white;
 }
 
 ul {

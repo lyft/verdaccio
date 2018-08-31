@@ -1,5 +1,6 @@
 @import '../../styles/variables';
 @import '../../styles/mixins';
+@import '../../styles/lyft';
 
 .package {
   .header {
@@ -12,7 +13,7 @@
     display: flex;
     p.description {
       width: 100%;
-      margin-bottom: 0;
+      margin-bottom: 10px;
       font-size: $font-size-sm;
       color: $grey-dark;
     }
@@ -46,8 +47,11 @@
       width: 100%;
 
       h1 {
-        font-size: $font-size-md;
+        color: $lyft-dark-indigo;
+        font-size: $font-size-lg;
         margin: 0;
+        letter-spacing: normal;
+
 
         :global {
           .el-tag {

@@ -3,7 +3,7 @@
 
 :global {
   .container {
-    margin-top: 90px;
+    margin-top: $space-lg;
 
     @include container-size;
 

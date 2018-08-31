@@ -1,11 +1,12 @@
 @import '../../styles/variables';
 @import '../../styles/mixins';
+@import '../../styles/lyft';
 
 @-webkit-keyframes borderlava {
-  0% {border-bottom-color: #0dc98b;} 
-  33% {border-bottom-color: #8f91ff;}
-  66% {border-bottom-color: #0f7abc;}
-  100% {border-bottom-color: #0dc98b;}
+  0% {border-bottom-color: $lyft-light-green;} 
+  33% {border-bottom-color: $lyft-light-purple;}
+  66% {border-bottom-color: $lyft-light-blue;}
+  100% {border-bottom-color: $lyft-light-green;}
 }
 
 .header {
@@ -28,10 +29,10 @@
   }
   
 	@-webkit-keyframes lavalamp {
-		0% {fill: #0dc98b;} 
-		33% {fill: #8f91ff;}
-		66% {fill: #0f7abc;}
-		100% {fill: #0dc98b;}
+		0% {fill: $lyft-light-green;} 
+		33% {fill: $lyft-light-purple;}
+		66% {fill: $lyft-light-blue;}
+		100% {fill: $lyft-light-green;}
   }
 
   .logo {
