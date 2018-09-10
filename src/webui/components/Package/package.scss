@@ -1,5 +1,6 @@
 @import '../../styles/variables';
 @import '../../styles/mixins';
+@import '../../styles/lyft';
 
 .package {
   .header {
@@ -12,7 +13,7 @@
     display: flex;
     p.description {
       width: 100%;
-      margin-bottom: 0;
+      margin-bottom: 10px;
       font-size: $font-size-sm;
       color: $grey-dark;
     }
@@ -46,8 +47,11 @@
       width: 100%;
 
       h1 {
-        font-size: $font-size-md;
+        color: $lyft-dark-indigo;
+        font-size: $font-size-lg;
         margin: 0;
+        letter-spacing: normal;
+
 
         :global {
           .el-tag {
@@ -62,26 +66,6 @@
       font-size: inherit;
       width: 30%;
       text-align: right;
-    }
-
-    &:hover {
-      &::before {
-        content: '';
-        display: block;
-        background: rgba(255, 255, 255, 0.7);
-        @include fullSize;
-      }
-
-      &::after {
-        display: block;
-        position: absolute;
-        top: 50%;
-        right: 0;
-        left: 0;
-        text-align: center;
-        transform: translateY(-50%);
-        font-size: $font-size-md;
-      }
     }
   }
 }

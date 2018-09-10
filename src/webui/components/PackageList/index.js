@@ -10,35 +10,47 @@ import {formatAuthor, formatLicense} from '../../utils/package';
 import classes from './packageList.scss';
 
 export default class PackageList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.filteredPackages = this.renderList();
+    this.numFilteredPackages = this.filteredPackages.length;
+  }
+
   static propTypes = {
     packages: PropTypes.array,
-    help: PropTypes.bool
+    help: PropTypes.bool,
+    filter: PropTypes.string
   };
 
   render() {
+    this.filteredPackages = this.renderList();
+
     return (
       <div className="package-list-items">
         <div className={classes.pkgContainer}>
           {this.renderTitle()}
-          {this.isTherePackages() ? this.renderList() : this.renderOptions()}
+          {this.areTherePackages() && this.numFilteredPackages ? this.filteredPackages: this.renderOptions()}
         </div>
       </div>
     );
   }
 
   renderTitle() {
-    if (this.isTherePackages() === false) {
+    if (!this.areTherePackages() && this.numFilteredPackages) {
       return;
     }
 
-    return <h1 className={classes.listTitle}>Available Packages</h1>;
+    return <h1 className={classes.listTitle}>{this.numFilteredPackages} Packages</h1>;
   }
 
   renderList() {
-    return this.props.packages.map((pkg, i) => {
+    const {packages, filter} = this.props;
+
+    return packages.filter((p) => p.name.includes(filter)).map((pkg, i) => {
       const {name, version, description, time} = pkg;
       const author = formatAuthor(pkg.author);
       const license = formatLicense(pkg.license);
+
       return (
         <li key={i}>
           <Package {...{name, version, author, description, license, time}} />
@@ -48,7 +60,7 @@ export default class PackageList extends React.Component {
   }
 
   renderOptions() {
-    if (this.isTherePackages() === false && this.props.help) {
+    if (!this.areTherePackages() && this.props.help) {
       return this.renderHelp();
     } else {
       return this.renderNoItems();
@@ -59,19 +71,16 @@ export default class PackageList extends React.Component {
     return (
       <NoItems
         className="package-no-items"
-        text={'No items were found with that query'}
+        text={'No Packages Found :('}
       />
     );
   }
 
   renderHelp() {
-    if (this.props.help === false) {
-      return;
-    }
-    return <Help />;
+    if (this.props.help) return <Help />;
   }
 
-  isTherePackages() {
-    return isEmpty(this.props.packages) === false;
+  areTherePackages() {
+    return !isEmpty(this.props.packages);
   }
 }

@@ -1,45 +1,46 @@
 @import '../../styles/variables';
 @import '../../styles/mixins';
+@import '../../styles/lyft';
+
+@-webkit-keyframes borderlava {
+  0% {border-bottom-color: $lyft-light-green;}
+  33% {border-bottom-color: $lyft-light-purple;}
+  66% {border-bottom-color: $lyft-light-blue;}
+  100% {border-bottom-color: $lyft-light-green;}
+}
 
 .header {
   display: flex;
   height: 70px;
   width: 100%;
   align-items: center;
-  background: $primary-color;
+  background: $white;
   color: $white;
-
-  figure {
-    margin: 0 0 0 10px;
-    font-size: $font-size-sm;
-    line-height: $line-height-sm;
-    padding: 8px 0;
-  }
+  z-index: 1;
+  position: fixed;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  animation: borderlava 10s infinite;
 
   .headerWrap {
     display: flex;
     align-items: center;
     @include container-size;
+    padding-top: 5px;
   }
 
-  .headerRight {
-    margin-left: auto;
+  @-webkit-keyframes lavalamp {
+	0% {fill: $lyft-light-green;}
+	33% {fill: $lyft-light-purple;}
+	66% {fill: $lyft-light-blue;}
+	100% {fill: $lyft-light-green;}
   }
 
   .logo {
-    height: 50px;
-  }
-
-  .headerButton {
-    color: inherit;
-    border-color: $white;
-    background-color: transparent;
-
-    &:hover, &:focus {
-      color: $primary-color;
-      border-color: $saltpan;
-      background-color: $saltpan;
-    }
+    fill: $lyft-pink;
+    height: 45px;
+    width: 45px;
+    vertical-align: middle;
+    animation: lavalamp 10s infinite;
+    margin-right: 20px;
   }
 }
-
