@@ -143,7 +143,7 @@ function startVerdaccio(config, cliListen, configPath, pkgVersion, pkgName, call
   }
 
   // Node cron
-  if (config.cache.cron_schedule) {
+  if (config.cache && config.cache.cron_schedule) {
     cron.schedule(config.cache.cron_schedule, function () {
       updateMetadataCache(config.cache.metadata);
     });

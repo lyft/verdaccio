@@ -81,11 +81,11 @@ function startVerdaccio(config: any,
   // Create cache folders
   for (let key in config.cache) {
     console.debug(`Creating cache for ${key} at ${config.cache[key]}`);
-    if (!fs.existsSync(config.cache[key])) mkdirp.sync(config.cache[key]); 
+    if (!fs.existsSync(config.cache[key])) mkdirp.sync(config.cache[key]);
   }
 
   // Node cron
-  if (config.cache.cron_schedule) {
+  if (config.cache && config.cache.cron_schedule) {
     cron.schedule(config.cache.cron_schedule, function(){
       updateMetadataCache(config.cache.metadata);
     });
@@ -128,7 +128,7 @@ async function updateMetadataCache(cache) {
       request({
         url: `http://localhost:8080/metadata/${encodeURIComponent(pkg)}`,
         method: 'GET'
-      }, 
+      },
       function(err, res, body) {
         if (err || body.error) { console.debug(`Updating ${pkg} failed!`); }
         else {
@@ -137,7 +137,7 @@ async function updateMetadataCache(cache) {
       });
     }
   });
-  
+
 }
 
 function unlinkAddressPath(addr) {

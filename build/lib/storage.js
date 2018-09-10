@@ -60,7 +60,7 @@ class Storage {
     this.config = config;
     this.uplinks = (0, _uplinkUtil.setupUpLinks)(config);
     this.logger = LoggerApi.logger.child();
-    this.metadataCachePath = config.cache.metadata;
+    this.metadataCachePath = config.cache && config.cache.metadata;
   }
 
   init(config) {
