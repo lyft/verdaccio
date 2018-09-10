@@ -36,7 +36,7 @@
     "handle-callback-err": 2,
     "no-fallthrough": 2,
     "no-new-require": 2,
-    "max-len": [2, 160],
+    "max-len": [2, 2000],
     "camelcase": 0,
     "require-jsdoc": 0,
     "valid-jsdoc": 0,

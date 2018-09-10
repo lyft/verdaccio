@@ -5,6 +5,7 @@
   @include container-size;
   margin: auto 10px;
   display: flex;
+  margin-top: 30px;
 
   > div {
     &:first-child {

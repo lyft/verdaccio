@@ -12,7 +12,9 @@ import Search from '../../components/Search';
 
 export default class Home extends React.Component {
   static propTypes = {
-    children: PropTypes.element
+    children: PropTypes.element,
+    filter: PropTypes.string,
+    handler: PropTypes.func
   }
 
   state = {
@@ -91,6 +93,7 @@ export default class Home extends React.Component {
     this.setState({
       query: e.target.value.trim()
     });
+    this.props.handler(e.target.value.trim());
   }
 
   isTherePackages() {
@@ -100,7 +103,7 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        {this.renderSearchBar()}
+        {/* {this.renderSearchBar()} */}
         {this.state.loading ? this.renderLoading() : this.renderPackageList()}
       </div>
     );
@@ -118,6 +121,6 @@ export default class Home extends React.Component {
   }
 
   renderPackageList() {
-    return <PackageList help={this.state.fistTime} packages={this.state.packages} />;
+    return <PackageList help={this.state.fistTime} packages={this.state.packages} filter={this.props.filter}/>;
   }
 }
