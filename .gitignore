@@ -11,6 +11,7 @@ node_modules
 package-lock.json
 npm_test-fails-add-tarball*
 yarn-error.log
+build/
 
 
 # Istanbul
@@ -26,3 +27,4 @@ bundle.js.map
 __tests__
 
 # Compiled script
+static/*
