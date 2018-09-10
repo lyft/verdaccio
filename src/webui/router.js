@@ -15,7 +15,6 @@ const RouterApp = (props) => {
         <Header handler={props.handler}/>
         <div className="container">
           <Switch>
-            {/* <Route exact path="/(search/:keyword)?" component={ HomePage }/> */}
             <Route exact path="/(search/:keyword)?" render={() => <HomePage filter={props.filter} handler={props.handler}/>}/>
             <Route exact path="/detail/@:scope/:package" component={DetailPackage} />
             <Route exact path="/detail/:package" component={DetailPackage} />
