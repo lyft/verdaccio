@@ -29,14 +29,14 @@ export default class PackageList extends React.Component {
       <div className="package-list-items">
         <div className={classes.pkgContainer}>
           {this.renderTitle()}
-          {this.isTherePackages() && this.numFilteredPackages ? this.filteredPackages: this.renderOptions()}
+          {this.areTherePackages() && this.numFilteredPackages ? this.filteredPackages: this.renderOptions()}
         </div>
       </div>
     );
   }
 
   renderTitle() {
-    if (!this.isTherePackages() && this.numFilteredPackages) {
+    if (!this.areTherePackages() && this.numFilteredPackages) {
       return;
     }
 
@@ -60,7 +60,7 @@ export default class PackageList extends React.Component {
   }
 
   renderOptions() {
-    if (!this.isTherePackages() && this.props.help) {
+    if (!this.areTherePackages() && this.props.help) {
       return this.renderHelp();
     } else {
       return this.renderNoItems();
@@ -80,7 +80,7 @@ export default class PackageList extends React.Component {
     if (this.props.help) return <Help />;
   }
 
-  isTherePackages() {
+  areTherePackages() {
     return !isEmpty(this.props.packages);
   }
 }

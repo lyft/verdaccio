@@ -96,7 +96,7 @@ export default class Home extends React.Component {
     this.props.handler(e.target.value.trim());
   }
 
-  isTherePackages() {
+  areTherePackages() {
     return !isEmpty(this.state.packages);
   }
 
@@ -110,7 +110,7 @@ export default class Home extends React.Component {
   }
 
   renderSearchBar() {
-    if (!this.isTherePackages() && this.state.fistTime) {
+    if (!this.areTherePackages() && this.state.fistTime) {
       return;
     }
     return <Search handleSearchInput={this.handleSearchInput} />;
