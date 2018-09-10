@@ -155,6 +155,7 @@
   "scripts": {
     "release": "standard-version -a -s",
     "prepublish": "in-publish && npm run build:webui && npm run code:build || not-in-publish",
+    "postinstall": "npm run build:webui && npm run code:build",
     "flow": "flow check",
     "pretest": "npm run code:build",
     "test": "npm run test:unit",
