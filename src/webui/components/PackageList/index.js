@@ -10,32 +10,39 @@ import {formatAuthor, formatLicense} from '../../utils/package';
 import classes from './packageList.scss';
 
 export default class PackageList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.filteredPackages = this.renderList();
+  }
+
   static propTypes = {
     packages: PropTypes.array,
-    help: PropTypes.bool
+    help: PropTypes.bool,
+    filter: PropTypes.string
   };
 
   render() {
+    this.filteredPackages = this.renderList();
     return (
       <div className="package-list-items">
         <div className={classes.pkgContainer}>
           {this.renderTitle()}
-          {this.isTherePackages() ? this.renderList() : this.renderOptions()}
+          {this.isTherePackages() && this.filteredPackages.length !== 0 ? this.filteredPackages: this.renderOptions()}
         </div>
       </div>
     );
   }
 
   renderTitle() {
-    if (this.isTherePackages() === false) {
+    if (this.isTherePackages() === false && this.filteredPackages.length !== 0) {
       return;
     }
 
-    return <h1 className={classes.listTitle}>Available Packages</h1>;
+    return <h1 className={classes.listTitle}>{this.filteredPackages.length} Packages</h1>;
   }
 
   renderList() {
-    return this.props.packages.map((pkg, i) => {
+    return this.props.packages.filter((p) => p.name.includes(this.props.filter)).map((pkg, i) => {
       const {name, version, description, time} = pkg;
       const author = formatAuthor(pkg.author);
       const license = formatLicense(pkg.license);
@@ -59,7 +66,7 @@ export default class PackageList extends React.Component {
     return (
       <NoItems
         className="package-no-items"
-        text={'No items were found with that query'}
+        text={'No Packages Found :('}
       />
     );
   }
