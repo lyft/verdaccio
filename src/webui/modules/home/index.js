@@ -96,21 +96,21 @@ export default class Home extends React.Component {
     this.props.handler(e.target.value.trim());
   }
 
-  isTherePackages() {
-    return isEmpty(this.state.packages);
+  areTherePackages() {
+    return !isEmpty(this.state.packages);
   }
 
   render() {
     return (
       <div>
-        {/* {this.renderSearchBar()} */}
+        {this.renderSearchBar()}
         {this.state.loading ? this.renderLoading() : this.renderPackageList()}
       </div>
     );
   }
 
   renderSearchBar() {
-    if (this.isTherePackages() && this.state.fistTime) {
+    if (!this.areTherePackages() && this.state.fistTime) {
       return;
     }
     return <Search handleSearchInput={this.handleSearchInput} />;
