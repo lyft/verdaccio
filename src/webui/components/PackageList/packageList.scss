@@ -1,13 +1,17 @@
 @import '../../styles/variables';
 @import '../../styles/mixins';
+@import '../../styles/lyft';
 
 .pkgContainer {
   margin: 0;
   padding: 0;
+  letter-spacing: normal;
 
   li {
     @include border-bottom-default($paleNavy);
     list-style: none;
+    padding-bottom: 15px;
+    margin-bottom: 5px;    
 
     &:last-child {
       border-bottom: none;
@@ -15,9 +19,10 @@
   }
 
   .listTitle {
-    font-weight: $font-weight-regular;
-    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    font-size: $font-size-lg;
+    color: $lyft-dark-indigo;
     margin-top: 30px;
-    margin-bottom: 0;
+    margin-bottom: 10px;
   }
 }

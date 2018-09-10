@@ -11,9 +11,18 @@ import './styles/main.scss';
 import 'normalize.css';
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {filter: ''};
+
+    this.changeFilter = (newFilter) => {
+      this.setState({filter: newFilter.target.value.trim()});
+    };
+  }
+
   render() {
     return (
-      <Route />
+      <Route filter={this.state.filter} handler={this.changeFilter}/>
     );
   }
 }
