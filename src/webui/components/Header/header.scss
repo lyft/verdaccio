@@ -3,7 +3,7 @@
 @import '../../styles/lyft';
 
 @-webkit-keyframes borderlava {
-  0% {border-bottom-color: $lyft-light-green;} 
+  0% {border-bottom-color: $lyft-light-green;}
   33% {border-bottom-color: $lyft-light-purple;}
   66% {border-bottom-color: $lyft-light-blue;}
   100% {border-bottom-color: $lyft-light-green;}
@@ -27,15 +27,16 @@
     @include container-size;
     padding-top: 5px;
   }
-  
-	@-webkit-keyframes lavalamp {
-		0% {fill: $lyft-light-green;} 
-		33% {fill: $lyft-light-purple;}
-		66% {fill: $lyft-light-blue;}
-		100% {fill: $lyft-light-green;}
+
+  @-webkit-keyframes lavalamp {
+	0% {fill: $lyft-light-green;}
+	33% {fill: $lyft-light-purple;}
+	66% {fill: $lyft-light-blue;}
+	100% {fill: $lyft-light-green;}
   }
 
   .logo {
+    fill: $lyft-pink;
     height: 45px;
     width: 45px;
     vertical-align: middle;
