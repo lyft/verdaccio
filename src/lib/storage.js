@@ -28,6 +28,8 @@ Logger,
 import type {IReadTarball, IUploadTarball} from '@verdaccio/streams';
 import {hasProxyTo} from './config-utils';
 
+const cacache = require('cacache/en');
+
 const LoggerApi = require('../lib/logger');
 
 class Storage implements IStorageHandler {
@@ -35,11 +37,13 @@ class Storage implements IStorageHandler {
   config: Config;
   logger: Logger;
   uplinks: ProxyList;
+  metadataCachePath: String;
 
   constructor(config: Config) {
     this.config = config;
     this.uplinks = setupUpLinks(config);
     this.logger = LoggerApi.logger.child();
+    this.metadataCachePath = config.cache && config.cache.metadata;
   }
 
   init(config: Config) {
@@ -274,6 +278,20 @@ class Storage implements IStorageHandler {
    * @property {function} options.callback Callback for receive data
    */
   getPackage(options: any) {
+    const self = this;
+    cacache.get.info(self.metadataCachePath, options.name).then((data) => {
+      if (!data) {
+        return this.getPackageFromStorage(options);
+      }
+      console.debug(`Metadata from cache: ${options.name}`);
+      cacache.get(self.metadataCachePath, options.name).then((res) => {
+        options.callback(null, (JSON.parse(res.data.toString())), null, false);
+      });
+    });
+  }
+
+  getPackageFromStorage(options) {
+    console.debug(`Metadata from storage: ${options.name}`);
     this.localStorage.getPackageMetadata(options.name, (err, data) => {
       if (err && (!err.status || err.status >= HTTP_STATUS.INTERNAL_ERROR)) {
         // report internal errors right away
@@ -281,7 +299,7 @@ class Storage implements IStorageHandler {
       }
 
       this._syncUplinksMetadata(options.name, data, {req: options.req},
-        function getPackageSynUpLinksCallback(err, result: Package, uplinkErrors) {
+        (err, result: Package, uplinkErrors) => {
           if (err) {
             return options.callback(err);
           }
@@ -291,7 +309,9 @@ class Storage implements IStorageHandler {
           // npm can throw if this field doesn't exist
           result._attachments = {};
 
-          options.callback(null, result, uplinkErrors);
+          cacache.put(this.metadataCachePath, options.name, JSON.stringify(result));
+
+          options.callback(null, result, uplinkErrors, true);
         });
     });
   }
