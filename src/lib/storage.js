@@ -291,16 +291,15 @@ class Storage implements IStorageHandler {
   }
 
   getPackageFromStorage(options) {
-    const self = this;
     console.debug(`Metadata from storage: ${options.name}`);
-    self.localStorage.getPackageMetadata(options.name, (err, data) => {
+    this.localStorage.getPackageMetadata(options.name, (err, data) => {
       if (err && (!err.status || err.status >= HTTP_STATUS.INTERNAL_ERROR)) {
         // report internal errors right away
         return options.callback(err);
       }
 
-      self._syncUplinksMetadata(options.name, data, {req: options.req},
-        function getPackageSynUpLinksCallback(err, result: Package, uplinkErrors) {
+      this._syncUplinksMetadata(options.name, data, {req: options.req},
+        (err, result: Package, uplinkErrors) => {
           if (err) {
             return options.callback(err);
           }
@@ -310,7 +309,7 @@ class Storage implements IStorageHandler {
           // npm can throw if this field doesn't exist
           result._attachments = {};
 
-          cacache.put(self.metadataCachePath, options.name, JSON.stringify(result));
+          cacache.put(this.metadataCachePath, options.name, JSON.stringify(result));
 
           options.callback(null, result, uplinkErrors, true);
         });
