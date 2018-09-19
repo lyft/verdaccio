@@ -15,6 +15,10 @@ import type {Callback} from '@verdaccio/types';
 import type {$Application} from 'express';
 import {DEFAULT_PORT} from './constants';
 
+import request from 'request';
+const mkdirp = require('mkdirp');
+const cacache = require('cacache/en');
+const cron = require('node-cron');
 const logger = require('./logger');
 
 /**
@@ -74,6 +78,19 @@ function startVerdaccio(config: any,
     throw new Error('config file must be an object');
   }
 
+  // Create cache folders
+  for (let key in config.cache) {
+    console.debug(`Creating cache for ${key} at ${config.cache[key]}`);
+    if (!fs.existsSync(config.cache[key])) mkdirp.sync(config.cache[key]);
+  }
+
+  // Node cron
+  if (config.cache && config.cache.cron_schedule) {
+    cron.schedule(config.cache.cron_schedule, function(){
+      updateMetadataCache(config.cache.metadata);
+    });
+  }
+
   endPointAPI(config).then((app)=> {
     const addresses = getListListenAddresses(cliListen, config.listen);
 
@@ -95,6 +112,32 @@ function startVerdaccio(config: any,
       callback(webServer, addr, pkgName, pkgVersion);
     });
   });
+}
+
+async function updateMetadataCache(cache) {
+  console.debug('Updating metadata cache!');
+
+  await cacache.verify(cache);
+
+  // Get all keys in cache
+  cacache.ls(cache).then((data) => {
+    const metadataCacheKeys = Object.keys(data);
+
+    // Update each key in cache
+    for (let pkg of metadataCacheKeys) {
+      request({
+        url: `http://localhost:8080/metadata/${encodeURIComponent(pkg)}`,
+        method: 'GET'
+      },
+      function(err, res, body) {
+        if (err || body.error) { console.debug(`Updating ${pkg} failed!`); }
+        else {
+          console.debug(`Updated ${pkg}`);
+        }
+      });
+    }
+  });
+
 }
 
 function unlinkAddressPath(addr) {
